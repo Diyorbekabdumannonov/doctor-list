@@ -1,246 +1,88 @@
 import Head from 'next/head'
-import clientPromise from '../lib/mongodb'
+import Navbar from './navbar'
+import Footer from './footer'
+import { createContext, useRef, useState } from 'react';
+import { Field, Form, Formik } from 'formik';
+import { AiOutlineCloudUpload } from 'react-icons/ai'
 
-export default function Home({ isConnected }) {
-  return (
-    <div className="container">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+export const Context = createContext({})
 
-      <main>
-        <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js with MongoDB!</a>
-        </h1>
-
-        {isConnected ? (
-          <h2 className="subtitle">You are connected to MongoDB</h2>
-        ) : (
-          <h2 className="subtitle">
-            You are NOT connected to MongoDB. Check the <code>README.md</code>{' '}
-            for instructions.
-          </h2>
-        )}
-
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
-
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          padding: 0 0.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer img {
-          margin-left: 0.5rem;
-        }
-
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-          color: inherit;
-          text-decoration: none;
-        }
-
-        .title a {
-          color: #0070f3;
-          text-decoration: none;
-        }
-
-        .title a:hover,
-        .title a:focus,
-        .title a:active {
-          text-decoration: underline;
-        }
-
-        .title {
-          margin: 0;
-          line-height: 1.15;
-          font-size: 4rem;
-        }
-
-        .title,
-        .description {
-          text-align: center;
-        }
-
-        .subtitle {
-          font-size: 2rem;
-        }
-
-        .description {
-          line-height: 1.5;
-          font-size: 1.5rem;
-        }
-
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-
-        .grid {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
-          margin-top: 3rem;
-        }
-
-        .card {
-          margin: 1rem;
-          flex-basis: 45%;
-          padding: 1.5rem;
-          text-align: left;
-          color: inherit;
-          text-decoration: none;
-          border: 1px solid #eaeaea;
-          border-radius: 10px;
-          transition: color 0.15s ease, border-color 0.15s ease;
-        }
-
-        .card:hover,
-        .card:focus,
-        .card:active {
-          color: #0070f3;
-          border-color: #0070f3;
-        }
-
-        .card h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
-        }
-
-        .card p {
-          margin: 0;
-          font-size: 1.25rem;
-          line-height: 1.5;
-        }
-
-        .logo {
-          height: 1em;
-        }
-
-        @media (max-width: 600px) {
-          .grid {
-            width: 100%;
-            flex-direction: column;
-          }
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
-    </div>
-  )
-}
-
-export async function getServerSideProps(context) {
-  try {
-    await clientPromise
-    // `await clientPromise` will use the default database passed in the MONGODB_URI
-    // However you can use another database (e.g. myDatabase) by replacing the `await clientPromise` with the following code:
-    //
-    // `const client = await clientPromise`
-    // `const db = client.db("myDatabase")`
-    //
-    // Then you can execute queries against your database like so:
-    // db.find({}) or any of the MongoDB Node Driver commands
-
-    return {
-      props: { isConnected: true },
-    }
-  } catch (e) {
-    console.error(e)
-    return {
-      props: { isConnected: false },
-    }
+export default function Home() {
+  const [file, setFile] = useState('')
+  const addProject = async (values) => {
+    const res = await fetch('http://localhost:3001/api/daily', {
+      method: 'post',
+      body: JSON.stringify(values)
+    })
   }
+
+  const formRef = useRef()
+
+  const onSubmit = (e, submitProps) => {
+    addProject(e)
+    submitProps.resetForm()
+    setFile('')
+  }
+  return (
+    <Context.Provider value={''}>
+      <Head>
+        <title>Create Project</title>
+        <meta name="description" content="Generated by create next app" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" referrerPolicy="no-referrer" />
+      </Head>
+      <div className={'bg-white text-[#262d3d]'}>
+        <main className='max-w-[1440px] mx-auto'>
+          <Navbar />
+          <div className="flex w-full h-screen items-center justify-center">
+            <Formik
+              innerRef={formRef}
+              onSubmit={onSubmit}
+              initialValues={{ name: '', description: '', imageUrl: '' }} >
+              <Form>
+                <div className="shadow-xl rounded-xl px-4 py-8 flex flex-col">
+                  <h1 className="title">Create Project</h1>
+                  <Field
+                    id='name'
+                    name='name'
+                    type="text"
+                    className="border py-2 px-3 rounded-full mt-2 outline-none"
+                    placeholder="Project Name" />
+                  <Field
+                    id='description'
+                    name='description'
+                    type="text"
+                    className="border py-2 px-3 rounded-full mt-2 outline-none"
+                    placeholder="Project Description" />
+                  <div className="flex items-center">
+                    {file ?
+                      <img src={file} alt="file" className="w-full mt-6 border border-black py-4 px-6 max-h-40 object-contain" />
+                      : <>
+                        <input type="file"
+                          name='imageUrl'
+                          id="imageUrl"
+                          onChange={(e) => {
+                            setFile(URL.createObjectURL(e.target.files[0]))
+                            formRef.current.setFieldValue('imageUrl', JSON.stringify(e.target.files[0]))
+                          }}
+                          className='absolute md:w-96 w-full mt-4 h-12 opacity-0 cursor-pointer' />
+                        <button className="bg-gray-300 md:w-96 rounded-xl w-full mt-4 font-semibold justify-center text-18 py-2 flex items-center">
+                          <AiOutlineCloudUpload className="mr-2 w-8 h-8" />
+                          <span>Upload Image</span>
+                        </button>
+                      </>
+                    }
+
+                  </div>
+                  <button type="submit" className="bg-blue-600  text-white md:w-96 rounded-xl w-full mt-16 font-semibold text-18 py-2">Create Project</button>
+                </div>
+              </Form>
+            </Formik>
+          </div >
+          <Footer />
+        </main>
+      </div>
+    </Context.Provider>
+  );
 }
