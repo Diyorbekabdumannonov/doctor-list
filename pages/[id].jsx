@@ -6,6 +6,7 @@ import { makeStyles } from "@mui/styles";
 import { useRouter } from "next/router";
 import clientPromise from '../lib/mongodb'
 import { useEffect } from "react";
+import { useRef } from "react";
 
 const useStyles = makeStyles({
     profile: {
@@ -15,6 +16,8 @@ const useStyles = makeStyles({
 
 export default function PersonalInfo({ res }) {
     const classes = useStyles()
+    const calendarRef = useRef()
+
     const router = useRouter()
     const user = res?.filter(e => e._id === router.query.id)[0]
 
@@ -26,7 +29,12 @@ export default function PersonalInfo({ res }) {
         const res = await fetch('http://localhost:3001/api/daily', {
             method: 'post'
         })
+            .then(res => res.status === 200 ? router.push('/') : '')
     }
+
+    useEffect(() => {
+        console.log(calendarRef.current)
+    }, [calendarRef])
 
     return (
         <Box
@@ -42,7 +50,9 @@ export default function PersonalInfo({ res }) {
                         alt="profile"
                         width={100}
                         height={100}
-                        className={classes.profile} />
+                        className={classes.profile}
+                        style={{ borderRadius: '100px', objectFit: 'cover' }}
+                    />
                     <Typography
                         variant='h5'
                         marginTop="10px">
@@ -59,6 +69,7 @@ export default function PersonalInfo({ res }) {
             }
             <Box width={1000}>
                 <FullCalendar
+                    ref={calendarRef}
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
                     selectable

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import nextConnect from 'next-connect';
 import middleware from '../../lib/database';
 
@@ -12,8 +13,12 @@ handler.get(async (req, res) => {
 
 handler.post(async (req, res) => {
     let date = new Date()
-    const id = JSON.parse(localStorage.getItem('id'))
-    // let doc = await req.db.collection('doctors')
+    // let id = JSON.parse(localStorage.getItem('id'))
+    let doc = await req.db.collection('doctors').updateOne(
+        { "name": "Leanne Graham" },
+        { $set: { "name": "Leanne Graham", "date": date } },
+        { upsert: true }
+    )
     res.json({ message: 'ok' });
 })
 
