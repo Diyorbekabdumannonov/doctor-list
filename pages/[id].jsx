@@ -5,7 +5,6 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import { makeStyles } from "@mui/styles";
 import { useRouter } from "next/router";
 import clientPromise from '../lib/mongodb'
-import { useEffect } from "react";
 import { useRef } from "react";
 
 const useStyles = makeStyles({
@@ -16,25 +15,21 @@ const useStyles = makeStyles({
 
 export default function PersonalInfo({ res }) {
     const classes = useStyles()
-    const calendarRef = useRef()
-
     const router = useRouter()
     const user = res?.filter(e => e._id === router.query.id)[0]
+    const calendarRef = useRef()
 
-    useEffect(() => {
-        localStorage.setItem('id', JSON.stringify(router.query.id))
-    }, [])
+    console.log(calendarRef.current)
 
     const bookDoctor = async () => {
-        const res = await fetch('http://localhost:3001/api/daily', {
-            method: 'post'
+        const res = await fetch('http://localhost:3000/api/daily', {
+            headers: {
+                _id: user._id,
+                time: '1'
+            }
         })
             .then(res => res.status === 200 ? router.push('/') : '')
     }
-
-    useEffect(() => {
-        console.log(calendarRef.current)
-    }, [calendarRef])
 
     return (
         <Box
@@ -69,10 +64,10 @@ export default function PersonalInfo({ res }) {
             }
             <Box width={1000}>
                 <FullCalendar
-                    ref={calendarRef}
                     plugins={[dayGridPlugin]}
                     initialView="dayGridMonth"
-                    selectable
+                    selectable={true}
+                    ref={calendarRef}
                 />
             </Box>
             <Box

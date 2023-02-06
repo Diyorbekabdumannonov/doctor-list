@@ -13,7 +13,7 @@ export default function MainPage({ users }) {
             <Box
                 display="flex"
                 flexDirection="column"
-                boxShadow="0px 0px 10px 1px #0bff63"
+                boxShadow="0px 0px 10px 1px #9b9b9b"
                 borderRadius="20px"
                 marginY="40px"
                 paddingY="20px">

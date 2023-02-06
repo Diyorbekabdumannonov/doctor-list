@@ -44,11 +44,17 @@ export default function TableList({ user }) {
             className={classes.w20}
             display="flex"
             justifyContent='center'>
-            <Button
-                variant="contained"
-                color='success'>
-                Book
-            </Button>
+            {user?.booked ?
+                <Button
+                    variant="contained"
+                    color='success'>
+                    Booked at {user.booked}
+                </Button>
+                : <Button
+                    variant="contained"
+                    color='success'>
+                    Book
+                </Button>}
         </Box>
     </Link>
 }

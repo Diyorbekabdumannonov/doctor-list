@@ -7,19 +7,12 @@ const handler = nextConnect();
 handler.use(middleware);
 
 handler.get(async (req, res) => {
-    let doc = await req.db.collection('doctors')
-    res.json(doc)
-})
-
-handler.post(async (req, res) => {
-    let date = new Date()
-    // let id = JSON.parse(localStorage.getItem('id'))
-    let doc = await req.db.collection('doctors').updateOne(
-        { "name": "Leanne Graham" },
-        { $set: { "name": "Leanne Graham", "date": date } },
-        { upsert: true }
+    const updatedDoc = await req.db.collection('doctors').updateOne(
+        { "_id": ObjectId(req.headers._id) },
+        { $set: { "booked": req.headers.time } },
     )
-    res.json({ message: 'ok' });
+    let doc = await req.db.collection('doctors').find({}).toArray()
+    res.json(JSON.parse(JSON.stringify(req.headers._id)))
 })
 
 export default handler;
