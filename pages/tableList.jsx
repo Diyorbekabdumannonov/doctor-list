@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 export default function TableList({ user }) {
     const classes = useStyles()
     return <Link
-        href={`/${user._id}`}
+        href={`/${user?._id}`}
         className={classes.line}>
         <Image
             src={user.img}
@@ -44,17 +44,11 @@ export default function TableList({ user }) {
             className={classes.w20}
             display="flex"
             justifyContent='center'>
-            {user?.booked ?
-                <Button
-                    variant="contained"
-                    color='success'>
-                    Booked at {user.booked}
-                </Button>
-                : <Button
-                    variant="contained"
-                    color='success'>
-                    Book
-                </Button>}
+            <Button
+                variant="contained"
+                color='success'>
+                {user?.booked ? `Booked ${user.booked}` : 'Book'}
+            </Button>
         </Box>
     </Link>
 }

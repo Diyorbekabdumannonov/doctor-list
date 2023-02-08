@@ -17,12 +17,9 @@ export default function MainPage({ users }) {
                 borderRadius="20px"
                 marginY="40px"
                 paddingY="20px">
-                {users?.map(user => {
-                    return <Box key={user._id}>
-                        <TableList
-                            user={user} />
-                    </Box>
-                })}
+                {users?.map(user => <TableList key={user._id}
+                    user={user} />
+                )}
             </Box>
         </Box>
     )
